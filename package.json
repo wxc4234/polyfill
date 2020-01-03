@@ -29,7 +29,9 @@
     "timing.js",
     "keyboard.md",
     "keyboard.js",
-    "typedarray.js"
+    "typedarray.js",
+    "array",
+    "object"
   ],
   "repository": {
     "type": "git",
