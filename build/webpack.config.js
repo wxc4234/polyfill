@@ -9,8 +9,8 @@ module.exports = (env, {mode}) => {
     ];
     if (!isProduction) {
         plugins.push(new HtmlWebpackPlugin({
-            template: path.resolve(__dirname, '../dev_scripts/index.html'),
-            chunks: ['all', '_test'],
+            template: path.resolve(__dirname, '../config/index.html'),
+            chunks: ['all'],
             chunksSortMode: 'manual',
             minify: false
         }));
@@ -37,7 +37,7 @@ module.exports = (env, {mode}) => {
         },
         plugins,
         output: {
-            path: path.resolve(__dirname, '../feature')
+            path: path.resolve(__dirname, '../config_output')
         },
         optimization: {
             minimize: isProduction
