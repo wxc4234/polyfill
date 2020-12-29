@@ -1,7 +1,7 @@
 {
   "name": "@searchfe/polyfills",
   "author": "Joshua Bell <inexorabletash@gmail.com>",
-  "version": "0.1.41",
+  "version": "0.1.44",
   "description": "Collection of Web polyfills.",
   "license": "Unlicense",
   "main": "polyfill.js",
@@ -31,7 +31,8 @@
     "keyboard.js",
     "typedarray.js",
     "array",
-    "object"
+    "object",
+    "feature"
   ],
   "repository": {
     "type": "git",
@@ -44,5 +45,23 @@
   "bugs": {
     "url": "https://github.com/inexorabletash/polyfill/issues"
   },
-  "homepage": "https://github.com/inexorabletash/polyfill"
+  "homepage": "https://github.com/inexorabletash/polyfill",
+  "scripts": {
+    "build": "webpack --config ./build/webpack.config.js --mode=production",
+    "dev": "webpack serve --config ./build/webpack.config.js"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.12.10",
+    "@babel/preset-env": "^7.12.11",
+    "babel-loader": "^8.2.2",
+    "clean-webpack-plugin": "^3.0.0",
+    "core-js": "^3.8.1",
+    "glob": "^7.1.6",
+    "html-webpack-plugin": "^4.5.0",
+    "promise-polyfill": "^8.2.0",
+    "webpack": "^5.11.0",
+    "webpack-cli": "^4.2.0",
+    "webpack-dev-server": "^3.11.0",
+    "whatwg-fetch": "^3.5.0"
+  }
 }
