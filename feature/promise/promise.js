@@ -1,1 +1,1 @@
-import 'promise-polyfill';
+import 'promise-polyfill/src/polyfill';
