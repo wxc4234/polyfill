@@ -45,7 +45,7 @@ module.exports = (env, {mode}) => {
             minimize: true,
             splitChunks: {
                 chunks(chunk) {
-                    // exclude `all`
+                    // exclude `all` 文件
                     return chunk.name !== 'all';
                 },
                 cacheGroups: {
