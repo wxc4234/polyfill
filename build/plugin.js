@@ -33,7 +33,7 @@ class PolyfillGroup {
                     dynamicJs.dynamicDependConfig[configName] = dependList;
                 }
             });
-            // 生生成集合文件
+            // 生成集合文件
             compilation.assets['dynamic-js.json'] = {
                 source: () => JSON.stringify(dynamicJs),
                 size: () => JSON.stringify(dynamicJs).length
