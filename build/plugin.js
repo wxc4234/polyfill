@@ -1,52 +1,38 @@
-const acorn = require('acorn');
-const walk = require('acorn-walk');
-
 class PolyfillGroup {
     apply(compiler) {
         compiler.hooks.emit.tap('PolyfillGroup', compilation => {
-            const dependFileList = new Set();
-            const dynamicDependConfig = {};
-            const dynamicJs = {};
-            // 收集依赖的文件
-            Object.keys(compilation.assets).forEach(fileName => {
-                if (/^\d+/.test(fileName)) {
-                    const name = fileName.replace(/(\d+)\.js/, '$1');
-                    const fileContent = compilation.assets[fileName];
-                    dependFileList.add(+name);
-                    dynamicJs[name] = fileContent.source();
-                    // 删除输出的文件
-                    delete compilation.assets[fileName];
-                }
-            });
-            // 收集每个polyfill依赖的公共配置文件
-            Object.keys(compilation.assets).forEach(fileName => {
-                if (!/^\d+/.test(fileName) && !/^all/.test(fileName)) {
-                    const name = fileName.replace(/dynamic\/(.*)?\.js/, '$1');
-                    const fileContent = compilation.assets[fileName];
-                    const depend = new Set();
-                    // 找到依赖的公共配置
-                    walk.simple(acorn.parse(fileContent.source()), {
-                        ArrayExpression(node) {
-                            if (node.elements.length > 0) {
-                                for (const item of node.elements) {
-                                    if (dependFileList.has(item.value)) {
-                                        depend.add(item.value);
-                                    }
-
-                                }
+            const dynamicJs = {
+                api: {},
+                dynamicDependConfig: {},
+                common: {}
+            };
+            compilation.entrypoints.forEach((entry, name) => {
+                if (name !== 'all') {
+                    const dependList = [];
+                    // name示例： dynamic/Array
+                    // item示例：dynamic/Array.js
+                    for (const item of entry.getFiles()) {
+                        const isCommonChunk = /^\d+\.js/g.test(item);
+                        // 公共文件内容
+                        if (isCommonChunk) {
+                            const name = item.replace(/(\d+)\.js/, '$1');
+                            dependList.push(name);
+                            if (!dynamicJs.common[name]) {
+                                dynamicJs.common[name] = compilation.assets[item].source();
                             }
-
                         }
-                    });
-                    dynamicDependConfig[name] = [...depend];
-                    dynamicJs[name] = fileContent.source();
-                    // 删除输出的文件
-                    delete compilation.assets[fileName];
+                        // api文件内容
+                        else {
+                            const name = item.replace(/dynamic\/(.*)\.js/, '$1');
+                            dynamicJs.api[name] = compilation.assets[item].source();
+                        }
+                        delete compilation.assets[item];
+                    }
+                    // 公共配置
+                    const configName = name.replace(/dynamic\/(.*)?/, '$1');
+                    dynamicJs.dynamicDependConfig[configName] = dependList;
                 }
-
             });
-            // 把配置导入到文件内，便于下面输出json文件
-            dynamicJs.dynamicDependConfig = dynamicDependConfig;
             // 生生成集合文件
             compilation.assets['dynamic-js.json'] = {
                 source: () => JSON.stringify(dynamicJs),
