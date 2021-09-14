@@ -1,0 +1,1 @@
+import '../../../feature/intersection-observer/intersection-observer';

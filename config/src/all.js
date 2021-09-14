@@ -10,4 +10,3 @@ import '../../feature/array/prototype/findIndex';
 import '../../feature/promise/promise';
 import '../../feature/fetch/fetch';
 import '../../feature/intersection-observer/intersection-observer';
-
