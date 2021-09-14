@@ -8,29 +8,27 @@ class PolyfillGroup {
             };
             compilation.entrypoints.forEach((entry, name) => {
                 if (name !== 'all') {
-                    const dependList = [];
-                    // name示例： dynamic/Array
-                    // item示例：dynamic/Array.js
-                    for (const item of entry.getFiles()) {
-                        const isCommonChunk = /^\d+\.js/g.test(item);
-                        // 公共文件内容
-                        if (isCommonChunk) {
-                            const name = item.replace(/(\d+)\.js/, '$1');
-                            dependList.push(name);
-                            if (!dynamicJs.common[name]) {
-                                dynamicJs.common[name] = compilation.assets[item].source();
+                    // 获取api的name
+                    const apiName = name.replace(/dynamic\/(.*)/, '$1');
+                    const fileName = name + '.js';
+                    const depend = new Set();
+                    for (const iterator of entry.chunks) {
+                        for (const chunk of iterator.getAllInitialChunks()) {
+                            // 没有name代表是新增的chunk
+                            if (!chunk.name) {
+                                const id = chunk.id;
+                                depend.add(id)
+                                if (!dynamicJs.common[id]) {
+                                    const fileName = id + '.js';
+                                    dynamicJs.common[id] = compilation.assets[fileName].source();
+                                    delete compilation.assets[fileName];
+                                }
                             }
                         }
-                        // api文件内容
-                        else {
-                            const name = item.replace(/dynamic\/(.*)\.js/, '$1');
-                            dynamicJs.api[name] = compilation.assets[item].source();
-                        }
-                        delete compilation.assets[item];
                     }
-                    // 公共配置
-                    const configName = name.replace(/dynamic\/(.*)?/, '$1');
-                    dynamicJs.dynamicDependConfig[configName] = dependList;
+                    dynamicJs.dynamicDependConfig[apiName] = [...depend];
+                    dynamicJs.api[apiName] = compilation.assets[fileName].source();
+                    delete compilation.assets[fileName];
                 }
             });
             // 生成集合文件
