@@ -1,7 +1,7 @@
 {
   "name": "@searchfe/polyfills",
   "author": "Joshua Bell <inexorabletash@gmail.com>",
-  "version": "0.1.47",
+  "version": "0.2.47",
   "description": "Collection of Web polyfills.",
   "license": "Unlicense",
   "main": "polyfill.js",
@@ -49,6 +49,8 @@
   "scripts": {
     "build": "webpack --config ./build/webpack.config.js --mode=production",
     "dev": "webpack serve --config ./build/webpack.config.js",
+    "build:pc": "export PC=true && webpack --config ./build/webpack.config.js --mode=production",
+    "dev:pc": "export PC=true && webpack serve --config ./build/webpack.config.js",
     "test": "jest"
   },
   "devDependencies": {

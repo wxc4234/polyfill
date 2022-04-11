@@ -3,9 +3,11 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const path = require('path');
 const entry = require('./entry.js');
 const PolyfillGroup = require('./plugin.js');
+const isPc = process.env.PC;
+
 module.exports = (env, {mode}) => {
     const isProduction = mode === 'production';
-    const plugins =  [
+    const plugins = [
         new CleanWebpackPlugin(),
         new PolyfillGroup()
     ];
@@ -17,6 +19,8 @@ module.exports = (env, {mode}) => {
             minify: false
         }));
     }
+
+    const outputDir = isPc ? '../pc_config_output' : '../config_output';
     return {
         mode: 'production',
         target: ['web', 'es5'],
@@ -39,7 +43,7 @@ module.exports = (env, {mode}) => {
         },
         plugins,
         output: {
-            path: path.resolve(__dirname, '../config_output')
+            path: path.resolve(__dirname, outputDir)
         },
         optimization: {
             minimize: true,
@@ -59,4 +63,4 @@ module.exports = (env, {mode}) => {
             }
         }
     };
-}
+};
