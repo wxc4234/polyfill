@@ -1,6 +1,7 @@
 class PolyfillGroup {
     apply(compiler) {
         compiler.hooks.emit.tap('PolyfillGroup', compilation => {
+            const isPc = process.env.PC;
             const dynamicJs = {
                 api: {},
                 dynamicDependConfig: {},
@@ -17,7 +18,7 @@ class PolyfillGroup {
                             // 没有name代表是新增的chunk
                             if (!chunk.name) {
                                 const id = chunk.id;
-                                depend.add(id)
+                                depend.add(id);
                                 if (!dynamicJs.common[id]) {
                                     const fileName = id + '.js';
                                     dynamicJs.common[id] = compilation.assets[fileName].source();
@@ -29,14 +30,51 @@ class PolyfillGroup {
                     dynamicJs.dynamicDependConfig[apiName] = [...depend];
                     dynamicJs.api[apiName] = compilation.assets[fileName].source();
                     delete compilation.assets[fileName];
+                } else if (isPc) {
+                    // pc polyfill 需要输出的.ts格式的函数，用于molecule引入
+                    const all = compilation.assets['all.js'];
+                    delete compilation.assets['all.js'];
+                    const sourceCode = JSON.stringify(all._value);
+                    const sourceFunc = 'export function allJSCb() { return ' + sourceCode + '}';
+                    compilation.assets['all.ts'] = {
+                        source: () => sourceFunc,
+                        size: () => sourceFunc.length
+                    };
+
+                    // 全量polyfill的js文件，用于主模板直接引入
+                    compilation.assets['total.js'] = {
+                        source: () => all._value,
+                        size: () => sourceCode.length
+                    };
                 }
             });
-            // 生成集合文件
-            compilation.assets['dynamic-js.json'] = {
-                source: () => JSON.stringify(dynamicJs),
-                size: () => JSON.stringify(dynamicJs).length
-            };
+
+            const dynamicJsStr = JSON.stringify(dynamicJs);
+
+            if (!isPc) {
+                // 生成集合文件
+                compilation.assets['dynamic-js.json'] = {
+                    source: () => dynamicJsStr,
+                    size: () => dynamicJsStr.length
+                };
+            } else {
+                const dynamicDependConfig = dynamicJs.dynamicDependConfig;
+                Object.keys(dynamicDependConfig).forEach(function (key) {
+                    const apiCodeAry = dynamicDependConfig[key];
+                    if (!apiCodeAry.length) {
+                        apiCodeAry.push(-1);
+                    }
+                });
+
+                const dynamicJsStrFunc = 'export function dynamicJSCb() { return ' + dynamicJsStr + '}';
+
+                compilation.assets['dynamic.ts'] = {
+                    source: () => dynamicJsStrFunc,
+                    size: () => dynamicJsStrFunc.length
+                };
+            }
         });
     }
 }
+
 module.exports = PolyfillGroup;
