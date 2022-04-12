@@ -49,15 +49,15 @@ class PolyfillGroup {
                 }
             });
 
-            const dynamicJsStr = JSON.stringify(dynamicJs);
-
             if (!isPc) {
+                const dynamicJsStr = JSON.stringify(dynamicJs);
                 // 生成集合文件
                 compilation.assets['dynamic-js.json'] = {
                     source: () => dynamicJsStr,
                     size: () => dynamicJsStr.length
                 };
             } else {
+
                 const dynamicDependConfig = dynamicJs.dynamicDependConfig;
                 Object.keys(dynamicDependConfig).forEach(function (key) {
                     const apiCodeAry = dynamicDependConfig[key];
@@ -65,6 +65,8 @@ class PolyfillGroup {
                         apiCodeAry.push(-1);
                     }
                 });
+
+                const dynamicJsStr = JSON.stringify(dynamicJs);
 
                 const dynamicJsStrFunc = 'export function dynamicJSCb() { return ' + dynamicJsStr + '}';
 
