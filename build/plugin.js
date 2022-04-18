@@ -30,17 +30,6 @@ class PolyfillGroup {
                     dynamicJs.dynamicDependConfig[apiName] = [...depend];
                     dynamicJs.api[apiName] = compilation.assets[fileName].source();
                     delete compilation.assets[fileName];
-                } else if (isPc) {
-                    // pc polyfill 需要输出的.ts格式的函数，用于molecule引入
-                    const all = compilation.assets['all.js'];
-                    delete compilation.assets['all.js'];
-                    const sourceCode = JSON.stringify(all._value);
-
-                    // 全量polyfill的js文件，用于主模板直接引入
-                    compilation.assets['total.js'] = {
-                        source: () => all._value,
-                        size: () => sourceCode.length
-                    };
                 }
             });
 
