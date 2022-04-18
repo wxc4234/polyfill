@@ -35,11 +35,6 @@ class PolyfillGroup {
                     const all = compilation.assets['all.js'];
                     delete compilation.assets['all.js'];
                     const sourceCode = JSON.stringify(all._value);
-                    const sourceFunc = 'export function allJSCb() { return ' + sourceCode + '}';
-                    compilation.assets['all.ts'] = {
-                        source: () => sourceFunc,
-                        size: () => sourceFunc.length
-                    };
 
                     // 全量polyfill的js文件，用于主模板直接引入
                     compilation.assets['total.js'] = {
@@ -55,24 +50,6 @@ class PolyfillGroup {
                 compilation.assets['dynamic-js.json'] = {
                     source: () => dynamicJsStr,
                     size: () => dynamicJsStr.length
-                };
-            } else {
-
-                const dynamicDependConfig = dynamicJs.dynamicDependConfig;
-                Object.keys(dynamicDependConfig).forEach(function (key) {
-                    const apiCodeAry = dynamicDependConfig[key];
-                    if (!apiCodeAry.length) {
-                        apiCodeAry.push(-1);
-                    }
-                });
-
-                const dynamicJsStr = JSON.stringify(dynamicJs);
-
-                const dynamicJsStrFunc = 'export function dynamicJSCb() { return ' + dynamicJsStr + '}';
-
-                compilation.assets['dynamic.ts'] = {
-                    source: () => dynamicJsStrFunc,
-                    size: () => dynamicJsStrFunc.length
                 };
             }
         });
