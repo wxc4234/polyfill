@@ -4,3 +4,7 @@ import '../../feature/symbol/symbol';
 import '../../feature/url/url';
 import '../../feature/fetch/fetch';
 import '../../feature/intersection-observer/intersection-observer';
+import '../../feature/element/closest';
+import '../../feature/array/prototype/includes';
+import '../../feature/object/entries';
+import '../../feature/object/values';
