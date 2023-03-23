@@ -1,11 +1,12 @@
-if (!Element.prototype.closest) {
+if (window.Element && !Element.prototype.closest) {
     Element.prototype.closest = function (s) {
-        var el = this;
-        if (!document.documentElement.contains(el)) return null;
+        const matches = document.querySelectorAll(s);
+        let i;
+        let el = this;
         do {
-            if (el.matches(s)) return el;
-            el = el.parentElement;
-        } while (el !== null);
-        return null;
+            i = matches.length;
+            while (--i >= 0 && matches.item(i) !== el) {}
+        } while ((i < 0) && (el = el.parentElement));
+        return el;
     };
 }
