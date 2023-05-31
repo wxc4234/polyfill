@@ -10,6 +10,7 @@ import '../../feature/array/prototype/fill';
 import '../../feature/array/prototype/find';
 import '../../feature/array/prototype/findIndex';
 import '../../feature/array/prototype/includes';
+import '../../feature/string/prototype/includes';
 import '../../feature/promise/promise';
 import '../../feature/fetch/fetch';
 import '../../feature/intersection-observer/intersection-observer';
