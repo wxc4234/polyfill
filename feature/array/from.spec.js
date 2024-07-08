@@ -10,10 +10,10 @@ describe('Array.from', () => {
     });
 
     test('input null throws', () => {
-        expect(() => from(null)).toThrowError('Cannot convert undefined or null to object');
+        expect(() => from(null)).toThrowError('object null is not iterable (cannot read property Symbol(Symbol.iterator))');
     });
 
     test('input undefined throws', () => {
-        expect(() => from(undefined)).toThrowError('Cannot convert undefined or null to object');
+        expect(() => from(undefined)).toThrowError('undefined is not iterable (cannot read property Symbol(Symbol.iterator))');
     });
 });
