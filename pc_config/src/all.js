@@ -6,6 +6,8 @@ import '../../feature/fetch/fetch';
 import '../../feature/intersection-observer/intersection-observer';
 import '../../feature/element/closest';
 import '../../feature/array/prototype/includes';
+import '../../feature/array/prototype/flat';
 import '../../feature/string/prototype/includes';
 import '../../feature/object/entries';
 import '../../feature/object/values';
+import '../../feature/object/fromEntries';
